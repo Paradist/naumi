@@ -8,6 +8,7 @@ Naumi is an innovative data format designed to be a complete alternative to JSON
 
 ## 📝 To Do (before the 1.0 release)
 
+- [ ] Describe the functions with examples.
 - [ ] Data compression using zstd
 - [ ] TLS
 - [ ] More speed and optimization!
