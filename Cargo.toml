@@ -1,0 +1,32 @@
+[package]
+name = "naumi"
+authors = [ "Paradist" ]
+version = "0.0.1"
+description = "Lightweight and fast data transfer protocol. Fast de/serialization and tiny size!"
+edition = "2021"
+license = "MIT"
+keywords = ["protocol", "fast", "lightweight", "serialization", "deserialization"]
+repository = "https://github.com/Paradist/naumi"
+categories = ["asynchronous", "data-structures", "encoding", "network-programming"]
+
+[dependencies]
+varint-simd = "0"
+macros = { path = "./src/macros" }
+tokio = { version = "1", optional = true, features = ["rt-multi-thread", "io-util"]}
+
+[features]
+async = ["tokio"]
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = 3
+strip = true
+
+[profile.dev]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = 3
+strip = true
