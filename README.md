@@ -30,12 +30,12 @@ Naumi is an innovative data format designed to be a complete alternative to JSON
 
 * Standart
 ```
-naumi = "0.1.1"
+naumi = "0.1"
 ```
 
 * Async (Tokio)
 ```
-naumi = { version = "0.1.1", features = ["async"] }
+naumi = { version = "0.1", features = ["async"] }
 ```
 
 
