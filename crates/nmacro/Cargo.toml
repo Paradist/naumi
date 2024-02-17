@@ -1,0 +1,31 @@
+[package]
+name = "nmacro"
+authors = [ "Paradist" ]
+version = "0.1.0"
+edition = "2021"
+description = "Lightweight and fast data transfer protocol. Fast de/serialization and tiny size!"
+license = "MIT"
+repository = "https://github.com/Paradist/naumi"
+homepage = "https://github.com/Paradist/naumi"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = { version = "2.0.49", features = ["full"] }
+quote = "1.0.35"
+proc-macro2 = "1.0.78"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = 3
+strip = true
+
+[profile.dev]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = 3
+strip = true
