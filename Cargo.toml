@@ -11,6 +11,8 @@ repository = "https://github.com/Paradist/naumi"
 homepage = "https://github.com/Paradist/naumi"
 categories = ["asynchronous", "data-structures", "encoding", "network-programming"]
 
+exclude = [".idea"]
+
 [dependencies]
 varint-simd = "0"
 tokio = { version = "1", optional = true, features = ["rt-multi-thread", "io-util"]}
