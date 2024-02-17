@@ -6,7 +6,7 @@
 
 Naumi is an innovative data format designed to be a complete alternative to JSON and ProtoBuf, while providing greater efficiency and flexibility. It is designed to meet modern data processing requirements, offering compact serialization, improved read and write speeds, and support for complex data structures and types, making it an ideal choice for a wide range of applications, from webAPIs to real-time messaging and configuration files.
 
-## 📝 To Do (before the 1.0 release)
+## 📝 To Do (before the 1.0.0 release)
 
 - [ ] Describe the functions with examples.
 - [ ] Data compression using zstd
