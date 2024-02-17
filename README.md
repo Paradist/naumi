@@ -46,7 +46,7 @@ naumi = { version = "0.1.1", features = ["async"] }
 ```rust
 use naumi::Coder;
 use naumi::types::Convert;
-use naumi::macros::NaumiConvert;
+use naumi::nmacro::NaumiConvert;
 
 #[derive(NaumiConvert)]
 struct Pixel {
