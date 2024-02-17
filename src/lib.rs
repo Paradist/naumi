@@ -1,4 +1,4 @@
-pub use macros;
+pub use nmacro;
 
 pub mod types;
 use types::Convert;
@@ -14,6 +14,10 @@ pub struct Coder(Vec<u8>);
 impl Coder {
     pub fn new() -> Self { Self(vec![]) }
 
+    pub fn clear(&mut self) {
+        self.0.clear();
+    }
+
     pub fn push<T: Convert>(&mut self, x: &T) {
         x.to_bytes(&mut self.0)
     }
@@ -21,6 +25,7 @@ impl Coder {
     pub fn get_ref(&self) -> &Vec<u8> {
         &self.0
     }
+
     pub fn get_mut_ref(&mut self) -> &mut Vec<u8> {
         &mut self.0
     }
