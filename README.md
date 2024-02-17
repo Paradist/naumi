@@ -91,6 +91,7 @@ fn main() -> io::Result<()> {
     let received_pixel = Pixel::from_bytes(&mut coder.get_mut_ref())?;
     
     // send back
+    coder.clear();
     coder.push(&received_pixel);
     coder.send(&mut stream)?;
     
