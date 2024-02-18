@@ -1,6 +1,6 @@
 use std::io;
 use crate::types::Convert;
-use crate::types::varint::{from_var_int, to_var_int};
+use crate::types::varint::{from_var_int_rev, to_var_int};
 
 #[derive(Debug, Clone)]
 pub struct VarInt(pub u32);
@@ -8,11 +8,13 @@ pub struct VarInt(pub u32);
 impl Convert for VarInt {
     fn to_bytes(&self, tx: &mut Vec<u8>) {
         let t = to_var_int(self.0);
-        tx.extend_from_slice(&t.0[..t.1 as usize])
+        let mut t =t.0[..t.1 as usize].to_vec();
+        t.reverse();
+        tx.extend_from_slice(&t);
     }
     fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
-        let x = from_var_int(rx)?;
-        let _ = rx.drain(0..x.1);
+        let x = from_var_int_rev(rx)?;
+        let _ = rx.drain(rx.len()-x.1..rx.len());
         Ok(
             Self(x.0)
         )

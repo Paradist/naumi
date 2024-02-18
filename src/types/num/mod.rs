@@ -12,7 +12,7 @@ where
     T: Default + Add + Mul
 {
     let size = size_of::<T>();
-    let bytes: Vec<u8> = rx.drain(0..size).collect();
+    let bytes: Vec<u8> = rx.drain(rx.len()-size..rx.len()).collect();
     let mut value: T = Default::default();
 
     if size == std::mem::size_of_val(&value) {

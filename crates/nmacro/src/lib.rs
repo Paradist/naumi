@@ -14,7 +14,7 @@ pub fn convert(input: TokenStream) -> TokenStream {
         Data::Struct(data_struct) => {
             match &data_struct.fields {
                 Fields::Named(fields) => {
-                    let field_to_bytes = fields.named.iter().map(|field| {
+                    let field_to_bytes = fields.named.iter().rev().map(|field| {
                         let field_name = &field.ident;
                         quote! {
                             self.#field_name.to_bytes(tx);
@@ -39,7 +39,7 @@ pub fn convert(input: TokenStream) -> TokenStream {
                 }
             },
                 Fields::Unnamed(_) => {
-                    let field_to_bytes = data_struct.fields.iter().enumerate().map(|(index, _)| {
+                    let field_to_bytes = data_struct.fields.iter().enumerate().rev().map(|(index, _)| {
                         quote! { self.#index.to_bytes(tx); }
                     });
 
@@ -84,7 +84,7 @@ pub fn convert(input: TokenStream) -> TokenStream {
                 } else {
                     quote! {
                         #index => #name::#variant_name,
-                        _ => return Err(std::io::Error::from(ErrorKind::InvalidData)),
+                        _ => return Err(std::io::Error::from(std::io::ErrorKind::InvalidData)),
                     }
                 }
             });
@@ -99,7 +99,7 @@ pub fn convert(input: TokenStream) -> TokenStream {
 
                     fn from_bytes(rx: &mut Vec<u8>) -> std::io::Result<Self> {
                         Ok (
-                            match rx.drain(0..1).as_slice()[0] {
+                            match rx.drain(rx.len()-1..rx.len()).as_slice()[0] {
                                 #(#from_variants)*
                             }
                         )

@@ -12,6 +12,8 @@ Naumi is an innovative data format designed to be a complete alternative to JSON
 - [ ] Data compression using zstd
 - [ ] TLS
 - [ ] More speed and optimization!
+  - [X] Huge speedup of iterators and custom types.
+  - [ ] Let me know on the [issues page](https://github.com/Paradist/naumi/issues).
 - [ ] More supported data types:
   - [ ] Let me know on the [issues page](https://github.com/Paradist/naumi/issues).
 
@@ -30,12 +32,12 @@ Naumi is an innovative data format designed to be a complete alternative to JSON
 
 * Standart
 ```
-naumi = "0.1"
+naumi = "0.2"
 ```
 
 * Async (Tokio)
 ```
-naumi = { version = "0.1", features = ["async"] }
+naumi = { version = "0.2", features = ["async"] }
 ```
 
 
@@ -91,13 +93,18 @@ fn main() -> io::Result<()> {
     let received_pixel = Pixel::from_bytes(&mut coder.get_mut_ref())?;
     
     // send back
-    coder.clear();
     coder.push(&received_pixel);
     coder.send(&mut stream)?;
     
     Ok(())
 }
 ```
+## Update log
+
+* `0.2.0` - Hugely accelerated iterators and  custom structures, bug fixes.
+ * `0.1.0 - 0.1.5` - Bug fixes
+
+
 ## 🤝 Contributing
 
 Contributions, issues and feature requests are welcome!
@@ -109,5 +116,5 @@ Give a ⭐️ if this project helped you!
 
 ## 📝 License
 
-Copyright © 2023 [Paradist](https://github.com/Paradist).
+Copyright © 2024 [Paradist](https://github.com/Paradist).
 This project is [MIT](LICENSE) licensed.
