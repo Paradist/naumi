@@ -101,6 +101,8 @@ fn main() -> io::Result<()> {
 ```
 ## Update log
 
+ * `0.2.3` - Accelerating the decode of numbers.
+ * `0.2.2` - Bug fixes
  * `0.2.1` - Describe the functions with examples.
  * `0.2.0` - Hugely accelerated iterators and  custom structures, bug fixes.
  * `0.1.0 - 0.1.5` - Bug fixes

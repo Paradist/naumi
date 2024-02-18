@@ -22,7 +22,7 @@ impl Convert for VarInt {
     }
     fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
         let x = from_var_int_rev(rx)?;
-        let _ = rx.drain(rx.len()-x.1..rx.len());
+        rx.truncate(rx.len()-x.1);
         Ok(
             Self(x.0)
         )

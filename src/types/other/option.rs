@@ -14,7 +14,7 @@ impl<T: Convert> Convert for Option<T> {
         }
     }
     fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
-        let x = rx.drain(rx.len()-1..rx.len()).as_slice()[0];
+        let x = rx.split_off(rx.len()-1)[0];
         Ok(
             match x {
                 1 => { Some(T::from_bytes(rx)?) }

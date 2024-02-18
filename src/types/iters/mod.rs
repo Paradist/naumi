@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
-use std::io;
+use std::{io};
 use std::io::{Error, ErrorKind};
 
 use crate::types::Convert;
@@ -41,12 +41,12 @@ pub struct LongVec<T: Convert>(pub Vec<T>);
 
 impl<T: Convert> Convert for TinyVec<T> {
     fn to_bytes(&self, tx: &mut Vec<u8>) {
-        if self.0.len() > 255 {
-            for i in 0..255usize { self.0[i].to_bytes(tx) };
-            tx.push(255);
-        } else {
+        if self.0.len() < 255 {
             for i in &self.0 {i.to_bytes(tx)};
             tx.push(self.0.len() as u8);
+        } else {
+            for i in 0..255usize { self.0[i].to_bytes(tx) };
+            tx.push(255);
         }
     }
     fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
@@ -63,12 +63,12 @@ impl<T: Convert> Convert for TinyVec<T> {
 
 impl<T: Convert> Convert for ShortVec<T> {
     fn to_bytes(&self, tx: &mut Vec<u8>) {
-        if self.0.len() > u16::MAX as usize {
-            for i in 0..u16::MAX as usize { self.0[i].to_bytes(tx) };
-            tx.extend_from_slice(&[255, 255]);
-        } else {
+        if self.0.len() < u16::MAX as usize {
             for i in &self.0 {i.to_bytes(tx)};
             tx.extend_from_slice(&self.0.len().to_le_bytes()[0..2]);
+        } else {
+            for i in 0..u16::MAX as usize { self.0[i].to_bytes(tx) };
+            tx.extend_from_slice(&[255, 255]);
         }
     }
     fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
@@ -85,12 +85,12 @@ impl<T: Convert> Convert for ShortVec<T> {
 
 impl<T: Convert> Convert for MediumVec<T> {
     fn to_bytes(&self, tx: &mut Vec<u8>) {
-        if self.0.len() > u32::MAX as usize {
-            for i in 0..u32::MAX as usize { self.0[i].to_bytes(tx) }
-            tx.extend_from_slice(&[255, 255, 255, 255]);
-        } else {
+        if self.0.len() < u32::MAX as usize {
             for i in &self.0 {i.to_bytes(tx)};
             tx.extend_from_slice(&self.0.len().to_le_bytes()[0..4]);
+        } else {
+            for i in 0..u32::MAX as usize { self.0[i].to_bytes(tx) }
+            tx.extend_from_slice(&[255, 255, 255, 255]);
         }
     }
     fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
@@ -107,12 +107,12 @@ impl<T: Convert> Convert for MediumVec<T> {
 
 impl<T: Convert> Convert for LongVec<T> {
     fn to_bytes(&self, tx: &mut Vec<u8>) {
-        if self.0.len() > u64::MAX as usize {
-            for i in 0..u64::MAX as usize { self.0[i].to_bytes(tx) }
-            tx.extend_from_slice(&[255, 255, 255, 255, 255, 255, 255, 255]);
-        } else {
+        if self.0.len() < u64::MAX as usize {
             for i in &self.0 {i.to_bytes(tx)};
             tx.extend_from_slice(&self.0.len().to_le_bytes()[0..8]);
+        } else {
+            for i in 0..u64::MAX as usize { self.0[i].to_bytes(tx) }
+            tx.extend_from_slice(&[255, 255, 255, 255, 255, 255, 255, 255]);
         }
     }
     fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
@@ -129,47 +129,46 @@ impl<T: Convert> Convert for LongVec<T> {
 // Var Int
 impl<T: Convert> Convert for Vec<T> {
     fn to_bytes(&self, tx: &mut Vec<u8>) {
-        if self.len() > u32::MAX as usize {
-            for i in 0..u32::MAX as usize { self[i].to_bytes(tx) }
-            let t = to_var_int(u32::MAX);
+        if self.len() < u32::MAX as usize {
+            for i in self {i.to_bytes(tx)};
+            let t = to_var_int(self.len() as u32);
             let mut t =t.0[..t.1 as usize].to_vec();
             t.reverse();
             tx.extend_from_slice(&t);
         } else {
-            for i in self {i.to_bytes(tx)};
-            let t = to_var_int(self.len() as u32);
+            for i in 0..u32::MAX as usize { self[i].to_bytes(tx) }
+            let t = to_var_int(u32::MAX);
             let mut t =t.0[..t.1 as usize].to_vec();
             t.reverse();
             tx.extend_from_slice(&t);
         }
     }
     fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
-        if rx.len() < 1 { return Err(Error::from(ErrorKind::InvalidData)); }
+        let s = from_var_int_rev(rx)?;
+        rx.truncate(rx.len() - s.1);
 
-        let size = from_var_int_rev(&rx)?;
-        let _ = rx.drain(rx.len()-size.1..rx.len());
-
-        let mut res = Self::new();
-        for _ in 0..size.0 {
-            res.push(T::from_bytes(rx)?)
+        let mut result = Self::new();
+        for _ in 0..s.0 {
+            result.push(T::from_bytes(rx)?);
         }
-        Ok(res)
+
+        Ok(result)
     }
 }
 
 // Var Int
 impl<T: Convert + Eq + PartialEq + Hash> Convert for HashSet<T> {
     fn to_bytes(&self, tx: &mut Vec<u8>) {
-        if self.len() > u32::MAX as usize {
-            let mut counter = 0u32;
-            for i in self { i.to_bytes(tx); counter += 1; if counter == u32::MAX {return;}}
-            let t = to_var_int(u32::MAX);
+        if self.len() < u32::MAX as usize {
+            for i in self {i.to_bytes(tx)};
+            let t = to_var_int(self.len() as u32);
             let mut t =t.0[..t.1 as usize].to_vec();
             t.reverse();
             tx.extend_from_slice(&t);
         } else {
-            for i in self {i.to_bytes(tx)};
-            let t = to_var_int(self.len() as u32);
+            let mut counter = 0u32;
+            for i in self { i.to_bytes(tx); counter += 1; if counter == u32::MAX {return;}}
+            let t = to_var_int(u32::MAX);
             let mut t =t.0[..t.1 as usize].to_vec();
             t.reverse();
             tx.extend_from_slice(&t);
@@ -179,7 +178,7 @@ impl<T: Convert + Eq + PartialEq + Hash> Convert for HashSet<T> {
         if rx.len() < 1 { return Err(Error::from(ErrorKind::InvalidData)); }
 
         let size = from_var_int_rev(&rx)?;
-        let _ = rx.drain(rx.len()-size.1..rx.len());
+        rx.truncate(rx.len()-size.1);
 
         let mut res = Self::new();
         for _ in 0..size.0 {
@@ -196,16 +195,16 @@ where
     J: Convert + Eq + PartialEq + Hash
 {
     fn to_bytes(&self, tx: &mut Vec<u8>) {
-        if self.len() > u32::MAX as usize {
-            let mut counter = 0u32;
-            for i in self { i.0.to_bytes(tx); i.1.to_bytes(tx); counter += 1; if counter == u32::MAX {return;}}
-            let t = to_var_int(u32::MAX);
+        if self.len() < u32::MAX as usize {
+            for i in self {i.0.to_bytes(tx); i.1.to_bytes(tx);};
+            let t = to_var_int(self.len() as u32);
             let mut t =t.0[..t.1 as usize].to_vec();
             t.reverse();
             tx.extend_from_slice(&t);
         } else {
-            for i in self {i.0.to_bytes(tx); i.1.to_bytes(tx);};
-            let t = to_var_int(self.len() as u32);
+            let mut counter = 0u32;
+            for i in self { i.0.to_bytes(tx); i.1.to_bytes(tx); counter += 1; if counter == u32::MAX {return;}}
+            let t = to_var_int(u32::MAX);
             let mut t =t.0[..t.1 as usize].to_vec();
             t.reverse();
             tx.extend_from_slice(&t);
@@ -215,7 +214,7 @@ where
         if rx.len() < 1 { return Err(Error::from(ErrorKind::InvalidData)); }
 
         let size = from_var_int_rev(&rx)?;
-        let _ = rx.drain(rx.len()-size.1..rx.len());
+        rx.truncate(rx.len()-size.1);
 
         let mut res = Self::new();
         for _ in 0..size.0 {

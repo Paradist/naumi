@@ -1,35 +1,40 @@
-use std::io;
+use std::{io, mem};
 use std::io::{Error, ErrorKind};
-use std::mem::size_of;
 use std::ops::{Add, Mul};
 
 use crate::types::Convert;
 
 pub mod varint;
 
+#[inline(always)]
 fn from_le_bytes<T>(rx: &mut Vec<u8>) -> io::Result<T>
-where
-    T: Default + Add + Mul
+    where
+        T: Sized,
 {
-    let size = size_of::<T>();
-    let bytes: Vec<u8> = rx.drain(rx.len()-size..rx.len()).collect();
-    let mut value: T = Default::default();
-
-    if size == std::mem::size_of_val(&value) {
-        let bytes_ptr = &mut value as *mut T as *mut u8;
-        unsafe {
-            std::ptr::copy_nonoverlapping(bytes.as_ptr(), bytes_ptr, size);
-        }
-    } else {
-        return Err(Error::from(ErrorKind::InvalidData));
+    if rx.len() < mem::size_of::<T>() {
+        return Err(io::Error::from(ErrorKind::UnexpectedEof));
     }
 
-    Ok(value)
+    let start = rx.len() - mem::size_of::<T>();
+    let result;
+
+    unsafe {
+        let ptr = rx.as_ptr().add(start) as *const T;
+        result = ptr.read_unaligned();
+    }
+    rx.truncate(start);
+    Ok(result)
 }
 
 impl Convert for u8 {
     fn to_bytes(&self, tx: &mut Vec<u8>) {tx.push(*self)}
-    fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {from_le_bytes(rx)}
+    fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
+        if let Some(u) = rx.pop() {
+            Ok(u)
+        } else {
+            Err(Error::from(ErrorKind::InvalidData))
+        }
+    }
 }
 impl Convert for u16 {
     fn to_bytes(&self, tx: &mut Vec<u8>) {tx.extend_from_slice(&self.to_le_bytes())}
@@ -50,7 +55,13 @@ impl Convert for u128 {
 
 impl Convert for i8 {
     fn to_bytes(&self, tx: &mut Vec<u8>) {tx.push(*self as u8)}
-    fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {from_le_bytes(rx)}
+    fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
+        if let Some(i) = rx.pop() {
+            Ok(i as i8)
+        } else {
+            Err(Error::from(ErrorKind::InvalidData))
+        }
+    }
 }
 impl Convert for i16 {
     fn to_bytes(&self, tx: &mut Vec<u8>) {tx.extend_from_slice(&self.to_le_bytes())}
