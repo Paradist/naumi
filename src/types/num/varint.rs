@@ -2,6 +2,14 @@ use std::io;
 use crate::types::Convert;
 use crate::types::varint::{from_var_int_rev, to_var_int};
 
+
+///
+/// A number with variable length.
+///
+/// The maximum value is u32::MAX
+///
+/// The maximum length is 5 bytes.
+///
 #[derive(Debug, Clone)]
 pub struct VarInt(pub u32);
 

@@ -8,7 +8,7 @@ Naumi is an innovative data format designed to be a complete alternative to JSON
 
 ## 📝 To Do (before the 1.0.0 release)
 
-- [ ] Describe the functions with examples.
+- [X] Describe the functions with examples.
 - [ ] Data compression using zstd
 - [ ] TLS
 - [ ] More speed and optimization!
@@ -101,7 +101,8 @@ fn main() -> io::Result<()> {
 ```
 ## Update log
 
-* `0.2.0` - Hugely accelerated iterators and  custom structures, bug fixes.
+ * `0.2.1` - Describe the functions with examples.
+ * `0.2.0` - Hugely accelerated iterators and  custom structures, bug fixes.
  * `0.1.0 - 0.1.5` - Bug fixes
 
 

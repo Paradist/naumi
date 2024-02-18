@@ -6,12 +6,36 @@ use std::io::{Error, ErrorKind};
 use crate::types::Convert;
 use crate::types::varint::{from_var_int_rev, to_var_int};
 
+
+///
+/// Vector prefixed with u8.
+///
+/// Maximum length - u8::MAX
+///
 #[derive(Debug)]
 pub struct TinyVec<T: Convert>(pub Vec<T>);
+
+///
+/// Vector prefixed with u16.
+///
+/// Maximum length - u16::MAX
+///
 #[derive(Debug)]
 pub struct ShortVec<T: Convert>(pub Vec<T>);
+
+///
+/// Vector prefixed with u32.
+///
+/// Maximum length - u32::MAX
+///
 #[derive(Debug)]
 pub struct MediumVec<T: Convert>(pub Vec<T>);
+
+///
+/// Vector prefixed with u64.
+///
+/// Maximum length - u64::MAX
+///
 #[derive(Debug)]
 pub struct LongVec<T: Convert>(pub Vec<T>);
 

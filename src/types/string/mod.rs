@@ -4,12 +4,35 @@ use std::os::unix::prelude::OsStrExt;
 use crate::types::Convert;
 use crate::types::varint::{from_var_int_rev, to_var_int};
 
+///
+/// String prefixed with u8.
+///
+/// Maximum length - u8::MAX
+///
 #[derive(Debug, Clone)]
 pub struct TinyString(pub String);
+
+///
+/// String prefixed with u16.
+///
+/// Maximum length - u16::MAX
+///
 #[derive(Debug, Clone)]
 pub struct ShortString(pub String);
+
+///
+/// String prefixed with u32.
+///
+/// Maximum length - u32::MAX
+///
 #[derive(Debug, Clone)]
 pub struct MediumString(pub String);
+
+///
+/// String prefixed with u64.
+///
+/// Maximum length - u64::MAX
+///
 #[derive(Debug, Clone)]
 pub struct LongString(pub String);
 
