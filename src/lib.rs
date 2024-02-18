@@ -121,6 +121,7 @@ impl Coder {
 
     ///
     /// Send the data to the stream and clear the buffer.
+    ///
     /// Use only this method of sending (Or async variant), because it safely sends data, specifying its length at the beginning, so that nothing is lost or stuck together.
     ///
     /// # Examples
@@ -153,6 +154,7 @@ impl Coder {
 
     ///
     /// Send the data to the stream and clear the buffer.
+    ///
     /// Use only this method of sending (Or syn variant), because it safely sends data, specifying its length at the beginning, so that nothing is lost or stuck together.
     ///
     /// # Examples
@@ -186,6 +188,7 @@ impl Coder {
 
     ///
     /// Get data from stream.
+    ///
     /// Use only this method of sending (Or async variant), because it safely sends data, specifying its length at the beginning, so that nothing is lost or stuck together.
     ///
     /// # Examples
@@ -237,6 +240,7 @@ impl Coder {
 
     ///
     /// Get data from stream.
+    ///
     /// Use only this method of sending (Or syn variant), because it safely sends data, specifying its length at the beginning, so that nothing is lost or stuck together.
     ///
     /// # Examples

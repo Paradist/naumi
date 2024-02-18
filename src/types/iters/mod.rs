@@ -42,7 +42,7 @@ pub struct LongVec<T: Convert>(pub Vec<T>);
 impl<T: Convert> Convert for TinyVec<T> {
     fn to_bytes(&self, tx: &mut Vec<u8>) {
         if self.0.len() > 255 {
-            for i in 0..25usize { self.0[i].to_bytes(tx) };
+            for i in 0..255usize { self.0[i].to_bytes(tx) };
             tx.push(255);
         } else {
             for i in &self.0 {i.to_bytes(tx)};
