@@ -11,7 +11,7 @@ repository = "https://github.com/Paradist/naumi"
 homepage = "https://github.com/Paradist/naumi"
 categories = ["asynchronous", "data-structures", "encoding", "network-programming"]
 
-exclude = [".idea"]
+exclude = [".idea", "benchmarks"]
 
 [dependencies]
 varint-simd = "0"
