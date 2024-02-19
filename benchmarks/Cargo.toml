@@ -1,0 +1,30 @@
+[package]
+name = "benchmarks"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+naumi = "0.2"
+fastrand = "2.0.1"
+lazy_static = "1.4.0"
+alkahest = { version = "0.3.0", features = ["derive"] }
+serde_cbor = "0.11.2"
+serde_derive = "1.0.196"
+serde = { version = "1.0.196", features = ["derive"] }
+pot = "3.0.0"
+simd-json = "0.13.8"
+simd-json-derive = "0.13.0"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = 3
+strip = true
+
+[profile.dev]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = 3
+strip = true
