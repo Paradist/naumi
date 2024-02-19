@@ -3,8 +3,19 @@
 
 ## Why?
 
-
 Naumi is an innovative data format designed to be a complete alternative to JSON and ProtoBuf, while providing greater efficiency and flexibility. It is designed to meet modern data processing requirements, offering compact serialization, improved read and write speeds, and support for complex data structures and types, making it an ideal choice for a wide range of applications, from webAPIs to real-time messaging and configuration files.
+
+
+## Benchmarks
+**Benchmark sources: [Benchmarks](https://github.com/Paradist/naumi/tree/main/benchmarks)**
+
+|      | **Encode** | **Decode** | **Size** |
+|:------------:|:----------:|:----------:|:--------:|
+|   **Naumi**  |   6,4 ms   |   6,8 ms   | 15002002 |
+| **Alkahest** |   24,3 ms  |   22,7 ms  | 15008008 |
+|    **Pot**   |  72,64 ms  |  187,9 ms  | 23994125 |
+|   **Cbor**   |   40,8 ms  |  115,2 ms  | 31904769 |
+| **SimdJson** |  107,6 ms  |  466,3 ms  | 62543210 |
 
 ## 📝 To Do (before the 1.0.0 release)
 
@@ -13,6 +24,7 @@ Naumi is an innovative data format designed to be a complete alternative to JSON
 - [ ] TLS
 - [ ] More speed and optimization!
   - [X] Huge speedup of iterators and custom types.
+  - [X] Huge speedup of numbers decode.
   - [ ] Let me know on the [issues page](https://github.com/Paradist/naumi/issues).
 - [ ] More supported data types:
   - [ ] Let me know on the [issues page](https://github.com/Paradist/naumi/issues).
@@ -101,6 +113,7 @@ fn main() -> io::Result<()> {
 ```
 ## Update log
 
+ * `0.2.4` - Added benchmarks.
  * `0.2.3` - Accelerating the decode of numbers.
  * `0.2.2` - Bug fixes
  * `0.2.1` - Describe the functions with examples.
