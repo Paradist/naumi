@@ -1,6 +1,5 @@
 use std::io;
 use std::io::{Error, ErrorKind};
-
 use crate::types::Convert;
 
 impl<T: Convert> Convert for Option<T> {
