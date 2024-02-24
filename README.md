@@ -47,9 +47,9 @@ Naumi is an innovative data format designed to be a complete alternative to JSON
 naumi = "0.2"
 ```
 
-* Async (Tokio)
+* All
 ```
-naumi = { version = "0.2", features = ["async"] }
+naumi = { version = "0.2", features = ["async", "default_", "clone", "debug", "partial_eq"] }
 ```
 
 
