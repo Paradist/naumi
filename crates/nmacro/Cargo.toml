@@ -1,9 +1,9 @@
 [package]
 name = "nmacro"
 authors = [ "Paradist" ]
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
-description = "Lightweight and fast data transfer protocol. Fast de/serialization and tiny size!"
+description = "Code generator for Naumi."
 license = "MIT"
 repository = "https://github.com/Paradist/naumi"
 homepage = "https://github.com/Paradist/naumi"

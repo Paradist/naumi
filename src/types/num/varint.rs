@@ -10,7 +10,10 @@ use crate::types::varint::{from_var_int_rev, to_var_int};
 ///
 /// The maximum length is 5 bytes.
 ///
-#[derive(Debug, Clone)]
+#[cfg_attr(feature = "clone", derive(Clone))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[cfg_attr(feature = "default_", derive(Default))]
+#[cfg_attr(feature = "partial_eq", derive(PartialEq))]
 pub struct VarInt(pub u32);
 
 impl Convert for VarInt {

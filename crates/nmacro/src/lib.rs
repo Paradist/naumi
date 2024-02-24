@@ -40,7 +40,8 @@ pub fn convert(input: TokenStream) -> TokenStream {
             },
                 Fields::Unnamed(_) => {
                     let field_to_bytes = data_struct.fields.iter().enumerate().rev().map(|(index, _)| {
-                        quote! { self.#index.to_bytes(tx); }
+                        let index_lit = proc_macro2::Literal::usize_unsuffixed(index);
+                        quote! { self.#index_lit.to_bytes(tx); }
                     });
 
                     let field_from_bytes = data_struct.fields.iter().enumerate().map(|(_, field)| {
@@ -67,24 +68,67 @@ pub fn convert(input: TokenStream) -> TokenStream {
             if data_enum.variants.len() > 255 {
                 panic!("Enums with more than 255 variants are not supported due to the limit of u8.");
             }
+
             let vars = data_enum.variants.len() as u8;
 
             let variants = data_enum.variants.iter().enumerate().map(|(index, v)| {
                 let variant_name = &v.ident;
                 let index = index as u8;
-                quote! { #name::#variant_name => tx.push(#index), }
+
+                match &v.fields {
+                    Fields::Unit => quote! {
+                        #name::#variant_name => tx.push(#index),
+                    },
+                    Fields::Unnamed(_) => {
+                        quote! {
+                            #name::#variant_name( ref field ) => {
+                                field.to_bytes(tx);
+                                tx.push(#index);
+                            }
+                        }
+                    },
+                    Fields::Named(_) => panic!("Named fields in enum variants are not supported."),
+                }
             });
 
             let from_variants = data_enum.variants.iter().enumerate().map(|(index, v)| {
                 let variant_name = &v.ident;
                 let index = index as u8;
 
-                if index != vars-1 {
-                    quote! { #index => #name::#variant_name, }
+
+                if !(index == vars-1 && index != 255){
+                    match &v.fields {
+                        Fields::Unit => quote! {
+                            #index => #name::#variant_name,
+                        },
+                        Fields::Unnamed(fields) => {
+                            let field_type = &fields.unnamed.first().unwrap().ty;
+                            quote! {
+                                #index => {
+                                    let field = <#field_type as naumi::types::Convert>::from_bytes(rx)?;
+                                    #name::#variant_name(field)
+                                }
+                            }
+                        },
+                        Fields::Named(_) => panic!("Named fields in enum variants are not supported."),
+                    }
                 } else {
-                    quote! {
-                        #index => #name::#variant_name,
-                        _ => return Err(std::io::Error::from(std::io::ErrorKind::InvalidData)),
+                    match &v.fields {
+                        Fields::Unit => quote! {
+                            #index => #name::#variant_name,
+                            _ => return Err(std::io::Error::from(std::io::ErrorKind::InvalidData)),
+                        },
+                        Fields::Unnamed(fields) => {
+                            let field_type = &fields.unnamed.first().unwrap().ty;
+                            quote! {
+                                #index => {
+                                    let field = <#field_type as naumi::types::Convert>::from_bytes(rx)?;
+                                    #name::#variant_name(field)
+                                }
+                                _ => return Err(std::io::Error::from(std::io::ErrorKind::InvalidData)),
+                        }
+                        },
+                        Fields::Named(_) => panic!("Named fields in enum variants are not supported."),
                     }
                 }
             });
@@ -99,8 +143,12 @@ pub fn convert(input: TokenStream) -> TokenStream {
 
                     fn from_bytes(rx: &mut Vec<u8>) -> std::io::Result<Self> {
                         Ok (
-                            match rx.drain(rx.len()-1..rx.len()).as_slice()[0] {
-                                #(#from_variants)*
+                            if let Some(u) = rx.pop() {
+                                match u as u8 {
+                                    #(#from_variants)*
+                                }
+                            } else {
+                                return Err(std::io::Error::from(std::io::ErrorKind::InvalidData))
                             }
                         )
                     }

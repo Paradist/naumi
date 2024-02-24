@@ -12,7 +12,10 @@ use crate::types::varint::{from_var_int_rev, to_var_int};
 ///
 /// Maximum length - u8::MAX
 ///
-#[derive(Debug)]
+#[cfg_attr(feature = "clone", derive(Clone))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[cfg_attr(feature = "default_", derive(Default))]
+#[cfg_attr(feature = "partial_eq", derive(PartialEq))]
 pub struct TinyVec<T: Convert>(pub Vec<T>);
 
 ///
@@ -20,7 +23,10 @@ pub struct TinyVec<T: Convert>(pub Vec<T>);
 ///
 /// Maximum length - u16::MAX
 ///
-#[derive(Debug)]
+#[cfg_attr(feature = "clone", derive(Clone))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[cfg_attr(feature = "default_", derive(Default))]
+#[cfg_attr(feature = "partial_eq", derive(PartialEq))]
 pub struct ShortVec<T: Convert>(pub Vec<T>);
 
 ///
@@ -28,7 +34,10 @@ pub struct ShortVec<T: Convert>(pub Vec<T>);
 ///
 /// Maximum length - u32::MAX
 ///
-#[derive(Debug)]
+#[cfg_attr(feature = "clone", derive(Clone))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[cfg_attr(feature = "default_", derive(Default))]
+#[cfg_attr(feature = "partial_eq", derive(PartialEq))]
 pub struct MediumVec<T: Convert>(pub Vec<T>);
 
 ///
@@ -36,7 +45,10 @@ pub struct MediumVec<T: Convert>(pub Vec<T>);
 ///
 /// Maximum length - u64::MAX
 ///
-#[derive(Debug)]
+#[cfg_attr(feature = "clone", derive(Clone))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[cfg_attr(feature = "default_", derive(Default))]
+#[cfg_attr(feature = "partial_eq", derive(PartialEq))]
 pub struct LongVec<T: Convert>(pub Vec<T>);
 
 impl<T: Convert> Convert for TinyVec<T> {

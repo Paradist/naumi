@@ -9,7 +9,10 @@ use crate::types::varint::{from_var_int_rev, to_var_int};
 ///
 /// Maximum length - u8::MAX
 ///
-#[derive(Debug, Clone)]
+#[cfg_attr(feature = "clone", derive(Clone))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[cfg_attr(feature = "default_", derive(Default))]
+#[cfg_attr(feature = "partial_eq", derive(PartialEq))]
 pub struct TinyString(pub String);
 
 ///
@@ -17,7 +20,10 @@ pub struct TinyString(pub String);
 ///
 /// Maximum length - u16::MAX
 ///
-#[derive(Debug, Clone)]
+#[cfg_attr(feature = "clone", derive(Clone))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[cfg_attr(feature = "default_", derive(Default))]
+#[cfg_attr(feature = "partial_eq", derive(PartialEq))]
 pub struct ShortString(pub String);
 
 ///
@@ -25,7 +31,10 @@ pub struct ShortString(pub String);
 ///
 /// Maximum length - u32::MAX
 ///
-#[derive(Debug, Clone)]
+#[cfg_attr(feature = "clone", derive(Clone))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[cfg_attr(feature = "default_", derive(Default))]
+#[cfg_attr(feature = "partial_eq", derive(PartialEq))]
 pub struct MediumString(pub String);
 
 ///
@@ -33,7 +42,10 @@ pub struct MediumString(pub String);
 ///
 /// Maximum length - u64::MAX
 ///
-#[derive(Debug, Clone)]
+#[cfg_attr(feature = "clone", derive(Clone))]
+#[cfg_attr(feature = "debug", derive(Debug))]
+#[cfg_attr(feature = "default_", derive(Default))]
+#[cfg_attr(feature = "partial_eq", derive(PartialEq))]
 pub struct LongString(pub String);
 
 impl Convert for TinyString {
