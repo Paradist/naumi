@@ -22,6 +22,7 @@ Naumi is an innovative data format designed to be a complete alternative to JSON
 - [X] Describe the functions with examples.
 - [ ] Data compression using zstd.
 - [ ] More benchmarks.
+- [X] More examples.
 - [ ] More speed and optimization!
   - [X] Huge speedup of iterators and custom types.
   - [X] Huge speedup of numbers decode.
@@ -55,63 +56,11 @@ naumi = { version = "0.3", features = ["net", "net_async", "default_", "clone", 
 
 ## ✊ Examples
 
+**Check it out on GitHub** - **[Examples](https://github.com/Paradist/naumi/tree/main/examples)**
 
- * Structure to bytes and back
-```rust
-use naumi::types::Convert;
-use naumi::nmacro::NaumiConvert;
-
-#[derive(NaumiConvert)]
-struct Pixel {
-    r: u8,
-    g: u8,
-    b: u8
-}
-
-fn main() -> io::Result<()> {
-    let pixel = Pixel {
-        r: 12,
-        g: 12,
-        b: 12,
-    };
-    
-    let mut encoded = vec![];
-    pixel.to_bytes(&mut encoded);
-
-    assert_eq!(encoded, vec![12,12,12]);
-    assert_eq!(pixel.to_bytes_return(), &vec![12,12,12]);
-
-    assert_eq!(Pixel::from_bytes(&mut coder.get_mut_ref())?, pixel);
-    Ok(())
-}
-```
-
-
- * Sending/receiving using TcpStream
-```rust
-use naumi::types::Convert;
-use naumi::nmacro::NaumiConvert;
-
-#[derive(NaumiConvert)]
-struct Pixel {
-    r: u8,
-    g: u8,
-    b: u8
-}
-
-fn main() -> io::Result<()> {
-    let mut stream = TcpStream::connect("0.0.0.0:80")?;
-    
-    let mut received_pixel = Pixel::receive(&mut stream)?;
-    
-    // send back
-    received_pixel.send(&mut sream)?;
-    
-    Ok(())
-}
-```
 ## 📋 Update log
 
+ * `0.3.1` - Moving the examples from the Readme.
  * `0.3.0` - Ease of use and some bug fixes. **Removed Coder**.
  * `0.2.5 - 0.2.7` - Bug fixes and some changes.
  * `0.2.4` - Added benchmarks.
