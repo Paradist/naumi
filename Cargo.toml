@@ -1,7 +1,7 @@
 [package]
 name = "naumi"
 authors = [ "Paradist" ]
-version = "0.3.0"
+version = "0.3.1"
 description = "Lightweight and fast data transfer protocol. Fast de/serialization and tiny size!"
 edition = "2021"
 license = "MIT"
@@ -11,12 +11,12 @@ repository = "https://github.com/Paradist/naumi"
 homepage = "https://github.com/Paradist/naumi"
 categories = ["asynchronous", "data-structures", "encoding", "network-programming"]
 
-exclude = [".idea", "benchmarks"]
+exclude = [".idea", "benchmarks", "examples"]
 
 [dependencies]
 varint-simd = "0"
 tokio = { version = "1", optional = true, features = ["rt-multi-thread", "io-util"]}
-nmacro = "0.1.3"
+nmacro = "0.1.4"
 
 [features]
 debug = []

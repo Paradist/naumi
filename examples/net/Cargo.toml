@@ -1,0 +1,24 @@
+workspace = { members = ["net_async"] }
+[package]
+name = "net"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+naumi = {version = "0.3", features = ["debug", "net"]}
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = 3
+strip = true
+
+[profile.dev]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = 3
+strip = true

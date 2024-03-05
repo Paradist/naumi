@@ -52,7 +52,6 @@ pub trait Convert {
     ///
     /// Use only this method of sending (Or async variant), because it safely sends data, specifying its length at the beginning, so that nothing is lost or stuck together.
     ///
-    /// #[cfg(feature = "net")]
     #[cfg(feature = "net")]
     fn receive<T: Read>(rx: &mut T) -> io::Result<Self> where Self: Sized;
 

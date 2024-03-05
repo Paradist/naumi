@@ -46,10 +46,10 @@ pub fn convert(input: TokenStream) -> TokenStream {
 
     let net_async = if _net_async {
         quote! {
-            async fn async_send<T: tokio::io::AsyncWriteExt + tokio::io::Unpin + tokio::io::AsyncRead>(&mut self, tx: &mut T) -> io::Result<()> {
+            async fn async_send<T: tokio::io::AsyncWriteExt + core::marker::Unpin + tokio::io::AsyncRead>(&mut self, tx: &mut T) -> io::Result<()> {
                 naumi::types::net::async_send(self, tx).await
             }
-            async fn async_receive<T: tokio::io::AsyncReadExt + tokio::io::Unpin + tokio::io::AsyncWrite>(rx: &mut T) -> io::Result<Self> {
+            async fn async_receive<T: tokio::io::AsyncReadExt + core::marker::Unpin + tokio::io::AsyncWrite>(rx: &mut T) -> io::Result<Self> {
                 naumi::types::net::async_receive(rx).await
             }
         }
