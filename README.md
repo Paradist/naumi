@@ -1,12 +1,12 @@
 <h1 align=center>Naumi</h1>
 <p align=center>Lightweight and fast data transfer protocol. Fast de/serialization and tiny size!</p>
 
-## Why?
+## 📌 Why?
 
 Naumi is an innovative data format designed to be a complete alternative to JSON and ProtoBuf, while providing greater efficiency and flexibility. It is designed to meet modern data processing requirements, offering compact serialization, improved read and write speeds, and support for complex data structures and types, making it an ideal choice for a wide range of applications, from webAPIs to real-time messaging and configuration files.
 
 
-## Benchmarks
+## 🚀 Benchmarks
 **Benchmark sources: [Benchmarks](https://github.com/Paradist/naumi/tree/main/benchmarks)**
 
 |      | **Encode** | **Decode** | **Size** |
@@ -20,8 +20,8 @@ Naumi is an innovative data format designed to be a complete alternative to JSON
 ## 📝 To Do (before the 1.0.0 release)
 
 - [X] Describe the functions with examples.
-- [ ] Data compression using zstd
-- [ ] TLS
+- [ ] Data compression using zstd.
+- [ ] More benchmarks.
 - [ ] More speed and optimization!
   - [X] Huge speedup of iterators and custom types.
   - [X] Huge speedup of numbers decode.
@@ -30,7 +30,7 @@ Naumi is an innovative data format designed to be a complete alternative to JSON
   - [ ] Let me know on the [issues page](https://github.com/Paradist/naumi/issues).
 
 
-## Currently supported types
+## 📦 Currently supported types
 
  **Numbers:** u8, u16, u32, u64, usize, u128, f32, f64, VarInt // and signed
  
@@ -40,25 +40,24 @@ Naumi is an innovative data format designed to be a complete alternative to JSON
  
  **Custom:** Structs(Named/Unnamed), Enums, Option
 
-## Install
+## 🔧 Install
 
 * Standart
 ```
-naumi = "0.2"
+naumi = "0.3"
 ```
 
 * All
 ```
-naumi = { version = "0.2", features = ["async", "default_", "clone", "debug", "partial_eq"] }
+naumi = { version = "0.3", features = ["net", "net_async", "default_", "clone", "debug", "partial_eq"] }
 ```
 
 
-## Examples
+## ✊ Examples
 
 
  * Structure to bytes and back
 ```rust
-use naumi::Coder;
 use naumi::types::Convert;
 use naumi::nmacro::NaumiConvert;
 
@@ -76,10 +75,11 @@ fn main() -> io::Result<()> {
         b: 12,
     };
     
-    let mut coder = Coder::new();
-    coder.push(&pixel);
+    let mut encoded = vec![];
+    pixel.to_bytes(&mut encoded);
 
-    assert_eq!(coder.get_ref(), &vec![12,12,12]);
+    assert_eq!(encoded, vec![12,12,12]);
+    assert_eq!(pixel.to_bytes_return(), &vec![12,12,12]);
 
     assert_eq!(Pixel::from_bytes(&mut coder.get_mut_ref())?, pixel);
     Ok(())
@@ -89,6 +89,9 @@ fn main() -> io::Result<()> {
 
  * Sending/receiving using TcpStream
 ```rust
+use naumi::types::Convert;
+use naumi::nmacro::NaumiConvert;
+
 #[derive(NaumiConvert)]
 struct Pixel {
     r: u8,
@@ -99,20 +102,18 @@ struct Pixel {
 fn main() -> io::Result<()> {
     let mut stream = TcpStream::connect("0.0.0.0:80")?;
     
-    let mut coder = Coder::new();
-    coder.receive(&mut stream)?;
-    
-    let received_pixel = Pixel::from_bytes(&mut coder.get_mut_ref())?;
+    let mut received_pixel = Pixel::receive(&mut stream)?;
     
     // send back
-    coder.push(&received_pixel);
-    coder.send(&mut stream)?;
+    received_pixel.send(&mut sream)?;
     
     Ok(())
 }
 ```
-## Update log
+## 📋 Update log
 
+ * `0.3.0` - Ease of use and some bug fixes. **Removed Coder**.
+ * `0.2.5 - 0.2.7` - Bug fixes and some changes.
  * `0.2.4` - Added benchmarks.
  * `0.2.3` - Accelerating the decode of numbers.
  * `0.2.2` - Bug fixes

@@ -2,9 +2,16 @@ use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 use std::{io};
 use std::io::{Error, ErrorKind};
+use crate::types;
 
 use crate::types::Convert;
 use crate::types::varint::{from_var_int_rev, to_var_int};
+
+#[cfg(feature = "net")]
+use std::io::{Read, Write};
+
+#[cfg(feature = "net_async")]
+use tokio::io::{AsyncRead, AsyncWriteExt, AsyncReadExt, AsyncWrite};
 
 
 ///
@@ -61,6 +68,11 @@ impl<T: Convert> Convert for TinyVec<T> {
             tx.push(255);
         }
     }
+    fn to_bytes_return(&self) -> Vec<u8> {
+        let mut tx = vec![];
+        &self.to_bytes(&mut tx);
+        tx
+    }
     fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
         if rx.len() < 1 { return Err(Error::new(ErrorKind::InvalidData, "")); }
 
@@ -70,6 +82,25 @@ impl<T: Convert> Convert for TinyVec<T> {
             res.0.push(T::from_bytes(rx)?)
         }
         Ok(res)
+    }
+
+    #[cfg(feature = "net")]
+    fn send<J: Write>(&mut self, tx: &mut J) -> io::Result<()> {
+        types::net::send(self, tx)
+    }
+    #[cfg(feature = "net_async")]
+    async fn async_send<J: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut J) -> io::Result<()> {
+        types::net::async_send(self, tx).await
+    }
+
+    #[cfg(feature = "net")]
+    fn receive<J: Read>(rx: &mut J) -> io::Result<Self> {
+        types::net::receive(rx)
+    }
+
+    #[cfg(feature = "net_async")]
+    async fn async_receive<J: AsyncWriteExt + Unpin + AsyncRead>(rx: &mut J) -> io::Result<Self> {
+        types::net::async_receive(rx).await
     }
 }
 
@@ -83,6 +114,11 @@ impl<T: Convert> Convert for ShortVec<T> {
             tx.extend_from_slice(&[255, 255]);
         }
     }
+    fn to_bytes_return(&self) -> Vec<u8> {
+        let mut tx = vec![];
+        &self.to_bytes(&mut tx);
+        tx
+    }
     fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
         if rx.len() < 2 { return Err(Error::new(ErrorKind::InvalidData, "")); }
 
@@ -92,6 +128,25 @@ impl<T: Convert> Convert for ShortVec<T> {
             res.0.push(T::from_bytes(rx)?)
         }
         Ok(res)
+    }
+
+    #[cfg(feature = "net")]
+    fn send<J: Write>(&mut self, tx: &mut J) -> io::Result<()> {
+        types::net::send(self, tx)
+    }
+    #[cfg(feature = "net_async")]
+    async fn async_send<J: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut J) -> io::Result<()> {
+        types::net::async_send(self, tx).await
+    }
+
+    #[cfg(feature = "net")]
+    fn receive<J: Read>(rx: &mut J) -> io::Result<Self> {
+        types::net::receive(rx)
+    }
+
+    #[cfg(feature = "net_async")]
+    async fn async_receive<J: AsyncWriteExt + Unpin + AsyncRead>(rx: &mut J) -> io::Result<Self> {
+        types::net::async_receive(rx).await
     }
 }
 
@@ -105,6 +160,11 @@ impl<T: Convert> Convert for MediumVec<T> {
             tx.extend_from_slice(&[255, 255, 255, 255]);
         }
     }
+    fn to_bytes_return(&self) -> Vec<u8> {
+        let mut tx = vec![];
+        &self.to_bytes(&mut tx);
+        tx
+    }
     fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
         if rx.len() < 4 { return Err(Error::new(ErrorKind::InvalidData, "")); }
 
@@ -114,6 +174,25 @@ impl<T: Convert> Convert for MediumVec<T> {
             res.0.push(T::from_bytes(rx)?)
         }
         Ok(res)
+    }
+
+    #[cfg(feature = "net")]
+    fn send<J: Write>(&mut self, tx: &mut J) -> io::Result<()> {
+        types::net::send(self, tx)
+    }
+    #[cfg(feature = "net_async")]
+    async fn async_send<J: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut J) -> io::Result<()> {
+        types::net::async_send(self, tx).await
+    }
+
+    #[cfg(feature = "net")]
+    fn receive<J: Read>(rx: &mut J) -> io::Result<Self> {
+        types::net::receive(rx)
+    }
+
+    #[cfg(feature = "net_async")]
+    async fn async_receive<J: AsyncWriteExt + Unpin + AsyncRead>(rx: &mut J) -> io::Result<Self> {
+        types::net::async_receive(rx).await
     }
 }
 
@@ -127,6 +206,11 @@ impl<T: Convert> Convert for LongVec<T> {
             tx.extend_from_slice(&[255, 255, 255, 255, 255, 255, 255, 255]);
         }
     }
+    fn to_bytes_return(&self) -> Vec<u8> {
+        let mut tx = vec![];
+        &self.to_bytes(&mut tx);
+        tx
+    }
     fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
         if rx.len() < 8 { return Err(Error::from(ErrorKind::InvalidData)); }
 
@@ -136,6 +220,25 @@ impl<T: Convert> Convert for LongVec<T> {
             res.0.push(T::from_bytes(rx)?)
         }
         Ok(res)
+    }
+
+    #[cfg(feature = "net")]
+    fn send<J: Write>(&mut self, tx: &mut J) -> io::Result<()> {
+        types::net::send(self, tx)
+    }
+    #[cfg(feature = "net_async")]
+    async fn async_send<J: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut J) -> io::Result<()> {
+        types::net::async_send(self, tx).await
+    }
+
+    #[cfg(feature = "net")]
+    fn receive<J: Read>(rx: &mut J) -> io::Result<Self> {
+        types::net::receive(rx)
+    }
+
+    #[cfg(feature = "net_async")]
+    async fn async_receive<J: AsyncWriteExt + Unpin + AsyncRead>(rx: &mut J) -> io::Result<Self> {
+        types::net::async_receive(rx).await
     }
 }
 // Var Int
@@ -155,6 +258,11 @@ impl<T: Convert> Convert for Vec<T> {
             tx.extend_from_slice(&t);
         }
     }
+    fn to_bytes_return(&self) -> Vec<u8> {
+        let mut tx = vec![];
+        &self.to_bytes(&mut tx);
+        tx
+    }
     fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
         let s = from_var_int_rev(rx)?;
         rx.truncate(rx.len() - s.1);
@@ -165,6 +273,25 @@ impl<T: Convert> Convert for Vec<T> {
         }
 
         Ok(result)
+    }
+
+    #[cfg(feature = "net")]
+    fn send<J: Write>(&mut self, tx: &mut J) -> io::Result<()> {
+        types::net::send(self, tx)
+    }
+    #[cfg(feature = "net_async")]
+    async fn async_send<J: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut J) -> io::Result<()> {
+        types::net::async_send(self, tx).await
+    }
+
+    #[cfg(feature = "net")]
+    fn receive<J: Read>(rx: &mut J) -> io::Result<Self> {
+        types::net::receive(rx)
+    }
+
+    #[cfg(feature = "net_async")]
+    async fn async_receive<J: AsyncWriteExt + Unpin + AsyncRead>(rx: &mut J) -> io::Result<Self> {
+        types::net::async_receive(rx).await
     }
 }
 
@@ -186,6 +313,11 @@ impl<T: Convert + Eq + PartialEq + Hash> Convert for HashSet<T> {
             tx.extend_from_slice(&t);
         }
     }
+    fn to_bytes_return(&self) -> Vec<u8> {
+        let mut tx = vec![];
+        &self.to_bytes(&mut tx);
+        tx
+    }
     fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
         if rx.len() < 1 { return Err(Error::from(ErrorKind::InvalidData)); }
 
@@ -197,6 +329,25 @@ impl<T: Convert + Eq + PartialEq + Hash> Convert for HashSet<T> {
             res.insert(T::from_bytes(rx)?);
         }
         Ok(res)
+    }
+
+    #[cfg(feature = "net")]
+    fn send<J: Write>(&mut self, tx: &mut J) -> io::Result<()> {
+        types::net::send(self, tx)
+    }
+    #[cfg(feature = "net_async")]
+    async fn async_send<J: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut J) -> io::Result<()> {
+        types::net::async_send(self, tx).await
+    }
+
+    #[cfg(feature = "net")]
+    fn receive<J: Read>(rx: &mut J) -> io::Result<Self> {
+        types::net::receive(rx)
+    }
+
+    #[cfg(feature = "net_async")]
+    async fn async_receive<J: AsyncWriteExt + Unpin + AsyncRead>(rx: &mut J) -> io::Result<Self> {
+        types::net::async_receive(rx).await
     }
 }
 
@@ -222,6 +373,11 @@ where
             tx.extend_from_slice(&t);
         }
     }
+    fn to_bytes_return(&self) -> Vec<u8> {
+        let mut tx = vec![];
+        &self.to_bytes(&mut tx);
+        tx
+    }
     fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
         if rx.len() < 1 { return Err(Error::from(ErrorKind::InvalidData)); }
 
@@ -234,6 +390,25 @@ where
             res.insert(T::from_bytes(rx)?, j);
         }
         Ok(res)
+    }
+
+    #[cfg(feature = "net")]
+    fn send<S: Write>(&mut self, tx: &mut S) -> io::Result<()> {
+        types::net::send(self, tx)
+    }
+    #[cfg(feature = "net_async")]
+    async fn async_send<S: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut S) -> io::Result<()> {
+        types::net::async_send(self, tx).await
+    }
+
+    #[cfg(feature = "net")]
+    fn receive<S: Read>(rx: &mut S) -> io::Result<Self> {
+        types::net::receive(rx)
+    }
+
+    #[cfg(feature = "net_async")]
+    async fn async_receive<S: AsyncWriteExt + Unpin + AsyncRead>(rx: &mut S) -> io::Result<Self> {
+        types::net::async_receive(rx).await
     }
 }
 

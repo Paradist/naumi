@@ -1,6 +1,7 @@
 extern crate proc_macro;
 
 use proc_macro::TokenStream;
+use cargo_metadata::{MetadataCommand, CargoOpt};
 
 use quote::quote;
 use syn::*;
@@ -9,6 +10,52 @@ use syn::*;
 pub fn convert(input: TokenStream) -> TokenStream {
     let ast = parse_macro_input!(input as DeriveInput);
     let name = &ast.ident;
+
+    let _metadata = MetadataCommand::new()
+        .manifest_path("./Cargo.toml")
+        .features(CargoOpt::NoDefaultFeatures).exec().unwrap();
+
+    let (mut _net, mut _net_async) = (false, false);
+
+    if let Some(deps) = _metadata.root_package() {
+        for d in &deps.dependencies {
+            if d.name == "naumi" {
+                for feature in &d.features {
+                    if feature == &"net".to_string() {
+                        _net = true;
+                    }
+                    if feature == &"net_async".to_string() {
+                        _net_async = true;
+                    }
+                }
+            }
+        }
+    }
+    let net = if _net {
+        quote! {
+            fn send<T: std::io::Write>(&mut self, tx: &mut T) -> io::Result<()> {
+                naumi::types::net::send(self, tx)
+            }
+            fn receive<T: std::io::Read>(rx: &mut T) -> io::Result<Self> {
+                naumi::types::net::receive(rx)
+            }
+        }
+    } else {
+        quote! {}
+    };
+
+    let net_async = if _net_async {
+        quote! {
+            async fn async_send<T: tokio::io::AsyncWriteExt + tokio::io::Unpin + tokio::io::AsyncRead>(&mut self, tx: &mut T) -> io::Result<()> {
+                naumi::types::net::async_send(self, tx).await
+            }
+            async fn async_receive<T: tokio::io::AsyncReadExt + tokio::io::Unpin + tokio::io::AsyncWrite>(rx: &mut T) -> io::Result<Self> {
+                naumi::types::net::async_receive(rx).await
+            }
+        }
+    } else {
+        quote! {}
+    };
 
     let expanded = match &ast.data {
         Data::Struct(data_struct) => {
@@ -32,9 +79,16 @@ pub fn convert(input: TokenStream) -> TokenStream {
                     quote! {
                         impl naumi::types::Convert for #name {
                             fn to_bytes(&self, tx: &mut Vec<u8>) { #(#field_to_bytes)* }
+                            fn to_bytes_return(&self) -> Vec<u8> {
+                                let mut tx = vec![];
+                                &self.to_bytes(&mut tx);
+                                tx
+                            }
                             fn from_bytes(rx: &mut Vec<u8>) -> std::io::Result<Self> {
                                 Ok(Self { #(#field_from_bytes)* })
                             }
+                            #net
+                            #net_async
                         }
                 }
             },
@@ -52,9 +106,16 @@ pub fn convert(input: TokenStream) -> TokenStream {
                     quote! {
                         impl naumi::types::Convert for #name {
                             fn to_bytes(&self, tx: &mut Vec<u8>) { #(#field_to_bytes)* }
+                            fn to_bytes_return(&self) -> Vec<u8> {
+                                let mut tx = vec![];
+                                &self.to_bytes(&mut tx);
+                                tx
+                            }
                             fn from_bytes(rx: &mut Vec<u8>) -> std::io::Result<Self> {
                                 Ok(Self( #(#field_from_bytes),* ))
                             }
+                            #net
+                            #net_async
                         }
                     }
                 },
@@ -81,7 +142,7 @@ pub fn convert(input: TokenStream) -> TokenStream {
                     },
                     Fields::Unnamed(_) => {
                         quote! {
-                            #name::#variant_name( ref field ) => {
+                            #name::#variant_name( field ) => {
                                 field.to_bytes(tx);
                                 tx.push(#index);
                             }
@@ -132,7 +193,6 @@ pub fn convert(input: TokenStream) -> TokenStream {
                     }
                 }
             });
-
             quote! {
                 impl naumi::types::Convert for #name {
                     fn to_bytes(&self, tx: &mut Vec<u8>) {
@@ -140,7 +200,11 @@ pub fn convert(input: TokenStream) -> TokenStream {
                             #(#variants)*
                         }
                     }
-
+                    fn to_bytes_return(&self) -> Vec<u8> {
+                        let mut tx = vec![];
+                        &self.to_bytes(&mut tx);
+                        tx
+                    }
                     fn from_bytes(rx: &mut Vec<u8>) -> std::io::Result<Self> {
                         Ok (
                             if let Some(u) = rx.pop() {
@@ -152,6 +216,8 @@ pub fn convert(input: TokenStream) -> TokenStream {
                             }
                         )
                     }
+                    #net
+                    #net_async
                 }
             }
         },
