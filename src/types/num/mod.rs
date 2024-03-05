@@ -305,54 +305,57 @@ impl Convert for i128 {
 }
 
 impl Convert for usize {
-    fn to_bytes(&self, tx: &mut Vec<u8>) {tx.extend_from_slice(&self.to_le_bytes())}
-    fn to_bytes_return(&self) -> Vec<u8> {self.to_le_bytes().to_vec()}
-    fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {from_le_bytes(rx)}
+    fn to_bytes(&self, tx: &mut Vec<u8>) {tx.extend_from_slice(&(*self as u64).to_le_bytes())}
+    fn to_bytes_return(&self) -> Vec<u8> {(*self as u64).to_le_bytes().to_vec()}
+    fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {Ok(from_le_bytes::<u64>(rx)? as Self)}
 
     #[cfg(feature = "net")]
     fn send<T: Write>(&mut self, tx: &mut T) -> io::Result<()> {
-        tx.write_all(&vec![core::mem::size_of::<Self>() as u8])?;
-        tx.write_all(&self.to_le_bytes())
+        tx.write_all(&vec![8])?;
+        tx.write_all(&((*self as u64).to_le_bytes()))
     }
+
     #[cfg(feature = "net_async")]
     async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut T) -> io::Result<()> {
-        tx.write_all(&vec![core::mem::size_of::<Self>() as u8]).await?;
-        tx.write_all(&self.to_le_bytes()).await
+        tx.write_all(&vec![8]).await?;
+        tx.write_all(&((*self as u64).to_le_bytes())).await
     }
 
     #[cfg(feature = "net")]
     fn receive<T: Read>(rx: &mut T) -> io::Result<Self> {
-        types::net::receive(rx)
+        Ok(types::net::receive::<u64, T>(rx)? as Self)
     }
 
     #[cfg(feature = "net_async")]
     async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
-        types::net::async_receive(rx).await
+        Ok(types::net::async_receive::<u64, T>(rx).await? as Self)
     }
 }
 impl Convert for isize {
-    fn to_bytes(&self, tx: &mut Vec<u8>) {tx.extend_from_slice(&self.to_le_bytes())}
-    fn to_bytes_return(&self) -> Vec<u8> {self.to_le_bytes().to_vec()}
-    fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {from_le_bytes(rx)}
+    fn to_bytes(&self, tx: &mut Vec<u8>) {tx.extend_from_slice(&(*self as i64).to_le_bytes())}
+    fn to_bytes_return(&self) -> Vec<u8> {(*self as i64).to_le_bytes().to_vec()}
+    fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {Ok(from_le_bytes::<i64>(rx)? as Self)}
 
     #[cfg(feature = "net")]
     fn send<T: Write>(&mut self, tx: &mut T) -> io::Result<()> {
-        tx.write_all(&self.to_le_bytes())
+        tx.write_all(&vec![8])?;
+        tx.write_all(&((*self as i64).to_le_bytes()))
     }
+
     #[cfg(feature = "net_async")]
     async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut T) -> io::Result<()> {
-        tx.write_all(&vec![core::mem::size_of::<Self>() as u8]).await?;
-        tx.write_all(&self.to_le_bytes()).await
+        tx.write_all(&vec![8]).await?;
+        tx.write_all(&((*self as i64).to_le_bytes())).await
     }
 
     #[cfg(feature = "net")]
     fn receive<T: Read>(rx: &mut T) -> io::Result<Self> {
-        types::net::receive(rx)
+        Ok(types::net::receive::<i64, T>(rx)? as Self)
     }
 
     #[cfg(feature = "net_async")]
     async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
-        types::net::async_receive(rx).await
+        Ok(types::net::async_receive::<i64, T>(rx).await? as Self)
     }
 }
 

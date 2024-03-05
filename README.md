@@ -60,6 +60,7 @@ naumi = { version = "0.3", features = ["net", "net_async", "default_", "clone", 
 
 ## 📋 Update log
 
+ * `0.3.2` - usize and isize are now always 64 bits.
  * `0.3.1` - Moving the examples from the Readme.
  * `0.3.0` - Ease of use and some bug fixes. **Removed Coder**.
  * `0.2.5 - 0.2.7` - Bug fixes and some changes.
