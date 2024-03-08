@@ -1,6 +1,6 @@
 use std::io;
 
-use crate::types;
+use crate::{impl_net, types};
 use crate::types::Convert;
 use crate::types::varint::{from_var_int_rev, to_var_int};
 
@@ -44,22 +44,5 @@ impl Convert for VarInt {
         )
     }
 
-    #[cfg(feature = "net")]
-    fn send<T: Write>(&mut self, tx: &mut T) -> io::Result<()> {
-        types::net::send(self, tx)
-    }
-    #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut T) -> io::Result<()> {
-        types::net::async_send(self, tx).await
-    }
-
-    #[cfg(feature = "net")]
-    fn receive<T: Read>(rx: &mut T) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net!();
 }

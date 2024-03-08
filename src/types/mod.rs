@@ -14,6 +14,7 @@ use tokio::io::{AsyncRead, AsyncWriteExt, AsyncReadExt, AsyncWrite};
 
 #[cfg(any(feature = "net", feature = "net_async"))]
 pub mod net;
+mod r#macro;
 
 pub trait Convert {
     ///

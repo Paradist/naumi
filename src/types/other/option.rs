@@ -1,7 +1,7 @@
 use std::io;
 use std::io::{Error, ErrorKind};
 
-use crate::types;
+use crate::{impl_net, types};
 use crate::types::Convert;
 
 #[cfg(feature = "net")]
@@ -37,23 +37,5 @@ impl<T: Convert> Convert for Option<T> {
         )
     }
 
-
-    #[cfg(feature = "net")]
-    fn send<J: Write>(&mut self, tx: &mut J) -> io::Result<()> {
-        types::net::send(self, tx)
-    }
-    #[cfg(feature = "net_async")]
-    async fn async_send<J: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut J) -> io::Result<()> {
-        types::net::async_send(self, tx).await
-    }
-
-    #[cfg(feature = "net")]
-    fn receive<J: Read>(rx: &mut J) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<J: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut J) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net!();
 }

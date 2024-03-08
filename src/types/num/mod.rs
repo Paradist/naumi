@@ -2,7 +2,7 @@ use std::{io, mem};
 use std::io::{Error, ErrorKind};
 use std::ops::{Add, Mul};
 
-use crate::types;
+use crate::{impl_net_receive, types};
 use crate::types::Convert;
 
 #[cfg(feature = "net")]
@@ -54,15 +54,7 @@ impl Convert for u8 {
         tx.write_all(&vec![1, *self]).await
     }
 
-    #[cfg(feature = "net")]
-    fn receive<T: Read>(rx: &mut T) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net_receive!();
 }
 impl Convert for u16 {
     fn to_bytes(&self, tx: &mut Vec<u8>) {tx.extend_from_slice(&self.to_le_bytes())}
@@ -80,15 +72,7 @@ impl Convert for u16 {
         tx.write_all(&self.to_le_bytes()).await
     }
 
-    #[cfg(feature = "net")]
-    fn receive<T: Read>(rx: &mut T) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net_receive!();
 }
 impl Convert for u32 {
     fn to_bytes(&self, tx: &mut Vec<u8>) {tx.extend_from_slice(&self.to_le_bytes())}
@@ -106,15 +90,7 @@ impl Convert for u32 {
         tx.write_all(&self.to_le_bytes()).await
     }
 
-    #[cfg(feature = "net")]
-    fn receive<T: Read>(rx: &mut T) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net_receive!();
 }
 impl Convert for u64 {
     fn to_bytes(&self, tx: &mut Vec<u8>) {tx.extend_from_slice(&self.to_le_bytes())}
@@ -132,15 +108,7 @@ impl Convert for u64 {
         tx.write_all(&self.to_le_bytes()).await
     }
 
-    #[cfg(feature = "net")]
-    fn receive<T: Read>(rx: &mut T) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net_receive!();
 }
 impl Convert for u128 {
     fn to_bytes(&self, tx: &mut Vec<u8>) {tx.extend_from_slice(&self.to_le_bytes())}
@@ -158,15 +126,7 @@ impl Convert for u128 {
         tx.write_all(&self.to_le_bytes()).await
     }
 
-    #[cfg(feature = "net")]
-    fn receive<T: Read>(rx: &mut T) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net_receive!();
 }
 
 impl Convert for i8 {
@@ -189,15 +149,7 @@ impl Convert for i8 {
         tx.write_all(&vec![1, *self as u8]).await
     }
 
-    #[cfg(feature = "net")]
-    fn receive<T: Read>(rx: &mut T) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net_receive!();
 }
 impl Convert for i16 {
     fn to_bytes(&self, tx: &mut Vec<u8>) {tx.extend_from_slice(&self.to_le_bytes())}
@@ -215,15 +167,7 @@ impl Convert for i16 {
         tx.write_all(&self.to_le_bytes()).await
     }
 
-    #[cfg(feature = "net")]
-    fn receive<T: Read>(rx: &mut T) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net_receive!();
 }
 impl Convert for i32 {
     fn to_bytes(&self, tx: &mut Vec<u8>) {tx.extend_from_slice(&self.to_le_bytes())}
@@ -241,15 +185,7 @@ impl Convert for i32 {
         tx.write_all(&self.to_le_bytes()).await
     }
 
-    #[cfg(feature = "net")]
-    fn receive<T: Read>(rx: &mut T) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net_receive!();
 }
 impl Convert for i64 {
     fn to_bytes(&self, tx: &mut Vec<u8>) {tx.extend_from_slice(&self.to_le_bytes())}
@@ -267,15 +203,7 @@ impl Convert for i64 {
         tx.write_all(&self.to_le_bytes()).await
     }
 
-    #[cfg(feature = "net")]
-    fn receive<T: Read>(rx: &mut T) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net_receive!();
 }
 impl Convert for i128 {
     fn to_bytes(&self, tx: &mut Vec<u8>) {tx.extend_from_slice(&self.to_le_bytes())}
@@ -293,15 +221,7 @@ impl Convert for i128 {
         tx.write_all(&self.to_le_bytes()).await
     }
 
-    #[cfg(feature = "net")]
-    fn receive<T: Read>(rx: &mut T) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net_receive!();
 }
 
 impl Convert for usize {
@@ -375,15 +295,7 @@ impl Convert for f32 {
         tx.write_all(&self.to_le_bytes()).await
     }
 
-    #[cfg(feature = "net")]
-    fn receive<T: Read>(rx: &mut T) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net_receive!();
 }
 impl Convert for f64 {
     fn to_bytes(&self, tx: &mut Vec<u8>) {tx.extend_from_slice(&self.to_le_bytes())}
@@ -401,13 +313,5 @@ impl Convert for f64 {
         tx.write_all(&self.to_le_bytes()).await
     }
 
-    #[cfg(feature = "net")]
-    fn receive<T: Read>(rx: &mut T) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net_receive!();
 }

@@ -1,3 +1,5 @@
+#![feature(async_fn_in_trait)]
+
 use std::io;
 use naumi::nmacro::NaumiConvert;
 use naumi::types::Convert;

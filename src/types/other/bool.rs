@@ -1,7 +1,7 @@
 use std::io;
 use std::io::{Error, ErrorKind};
 
-use crate::types;
+use crate::{impl_net_receive, types};
 use crate::types::Convert;
 
 #[cfg(feature = "net")]
@@ -32,13 +32,5 @@ impl Convert for bool {
         tx.write_all(&vec![1, *self as u8]).await
     }
 
-    #[cfg(feature = "net")]
-    fn receive<T: Read>(rx: &mut T) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net_receive!();
 }

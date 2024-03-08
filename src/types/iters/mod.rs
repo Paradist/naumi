@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 use std::{io};
 use std::io::{Error, ErrorKind};
-use crate::types;
+use crate::{impl_net, types};
 
 use crate::types::Convert;
 use crate::types::varint::{from_var_int_rev, to_var_int};
@@ -84,24 +84,7 @@ impl<T: Convert> Convert for TinyVec<T> {
         Ok(res)
     }
 
-    #[cfg(feature = "net")]
-    fn send<J: Write>(&mut self, tx: &mut J) -> io::Result<()> {
-        types::net::send(self, tx)
-    }
-    #[cfg(feature = "net_async")]
-    async fn async_send<J: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut J) -> io::Result<()> {
-        types::net::async_send(self, tx).await
-    }
-
-    #[cfg(feature = "net")]
-    fn receive<J: Read>(rx: &mut J) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<J: AsyncWriteExt + Unpin + AsyncRead>(rx: &mut J) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net!();
 }
 
 impl<T: Convert> Convert for ShortVec<T> {
@@ -130,24 +113,7 @@ impl<T: Convert> Convert for ShortVec<T> {
         Ok(res)
     }
 
-    #[cfg(feature = "net")]
-    fn send<J: Write>(&mut self, tx: &mut J) -> io::Result<()> {
-        types::net::send(self, tx)
-    }
-    #[cfg(feature = "net_async")]
-    async fn async_send<J: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut J) -> io::Result<()> {
-        types::net::async_send(self, tx).await
-    }
-
-    #[cfg(feature = "net")]
-    fn receive<J: Read>(rx: &mut J) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<J: AsyncWriteExt + Unpin + AsyncRead>(rx: &mut J) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net!();
 }
 
 impl<T: Convert> Convert for MediumVec<T> {
@@ -176,24 +142,7 @@ impl<T: Convert> Convert for MediumVec<T> {
         Ok(res)
     }
 
-    #[cfg(feature = "net")]
-    fn send<J: Write>(&mut self, tx: &mut J) -> io::Result<()> {
-        types::net::send(self, tx)
-    }
-    #[cfg(feature = "net_async")]
-    async fn async_send<J: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut J) -> io::Result<()> {
-        types::net::async_send(self, tx).await
-    }
-
-    #[cfg(feature = "net")]
-    fn receive<J: Read>(rx: &mut J) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<J: AsyncWriteExt + Unpin + AsyncRead>(rx: &mut J) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net!();
 }
 
 impl<T: Convert> Convert for LongVec<T> {
@@ -222,24 +171,7 @@ impl<T: Convert> Convert for LongVec<T> {
         Ok(res)
     }
 
-    #[cfg(feature = "net")]
-    fn send<J: Write>(&mut self, tx: &mut J) -> io::Result<()> {
-        types::net::send(self, tx)
-    }
-    #[cfg(feature = "net_async")]
-    async fn async_send<J: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut J) -> io::Result<()> {
-        types::net::async_send(self, tx).await
-    }
-
-    #[cfg(feature = "net")]
-    fn receive<J: Read>(rx: &mut J) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<J: AsyncWriteExt + Unpin + AsyncRead>(rx: &mut J) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net!();
 }
 // Var Int
 impl<T: Convert> Convert for Vec<T> {
@@ -275,24 +207,7 @@ impl<T: Convert> Convert for Vec<T> {
         Ok(result)
     }
 
-    #[cfg(feature = "net")]
-    fn send<J: Write>(&mut self, tx: &mut J) -> io::Result<()> {
-        types::net::send(self, tx)
-    }
-    #[cfg(feature = "net_async")]
-    async fn async_send<J: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut J) -> io::Result<()> {
-        types::net::async_send(self, tx).await
-    }
-
-    #[cfg(feature = "net")]
-    fn receive<J: Read>(rx: &mut J) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<J: AsyncWriteExt + Unpin + AsyncRead>(rx: &mut J) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net!();
 }
 
 // Var Int
@@ -331,31 +246,14 @@ impl<T: Convert + Eq + PartialEq + Hash> Convert for HashSet<T> {
         Ok(res)
     }
 
-    #[cfg(feature = "net")]
-    fn send<J: Write>(&mut self, tx: &mut J) -> io::Result<()> {
-        types::net::send(self, tx)
-    }
-    #[cfg(feature = "net_async")]
-    async fn async_send<J: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut J) -> io::Result<()> {
-        types::net::async_send(self, tx).await
-    }
-
-    #[cfg(feature = "net")]
-    fn receive<J: Read>(rx: &mut J) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<J: AsyncWriteExt + Unpin + AsyncRead>(rx: &mut J) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net!();
 }
 
 // Var Int
-impl<T, J> Convert for HashMap<T, J>
+impl<T, C> Convert for HashMap<T, C>
 where
     T: Convert + Eq + PartialEq + Hash,
-    J: Convert + Eq + PartialEq + Hash
+    C: Convert + Eq + PartialEq + Hash
 {
     fn to_bytes(&self, tx: &mut Vec<u8>) {
         if self.len() < u32::MAX as usize {
@@ -386,29 +284,12 @@ where
 
         let mut res = Self::new();
         for _ in 0..size.0 {
-            let j = J::from_bytes(rx)?;
+            let j = C::from_bytes(rx)?;
             res.insert(T::from_bytes(rx)?, j);
         }
         Ok(res)
     }
 
-    #[cfg(feature = "net")]
-    fn send<S: Write>(&mut self, tx: &mut S) -> io::Result<()> {
-        types::net::send(self, tx)
-    }
-    #[cfg(feature = "net_async")]
-    async fn async_send<S: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut S) -> io::Result<()> {
-        types::net::async_send(self, tx).await
-    }
-
-    #[cfg(feature = "net")]
-    fn receive<S: Read>(rx: &mut S) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<S: AsyncWriteExt + Unpin + AsyncRead>(rx: &mut S) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net!();
 }
 

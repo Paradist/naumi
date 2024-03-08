@@ -1,7 +1,7 @@
 use std::io;
 use std::os::unix::prelude::OsStrExt;
 
-use crate::types;
+use crate::{impl_net, types};
 use crate::types::Convert;
 use crate::types::varint::{from_var_int_rev, to_var_int};
 
@@ -76,24 +76,7 @@ impl Convert for TinyString {
         Ok(Self(String::from_utf8_lossy(&rx.split_off(rx.len()-size as usize)).to_string()))
     }
 
-    #[cfg(feature = "net")]
-    fn send<T: Write>(&mut self, tx: &mut T) -> io::Result<()> {
-        types::net::send(self, tx)
-    }
-    #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut T) -> io::Result<()> {
-        types::net::async_send(self, tx).await
-    }
-
-    #[cfg(feature = "net")]
-    fn receive<T: Read>(rx: &mut T) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net!();
 }
 
 impl Convert for ShortString {
@@ -116,24 +99,7 @@ impl Convert for ShortString {
         Ok(Self(String::from_utf8_lossy(&rx.split_off(rx.len()-size as usize)).to_string()))
     }
 
-    #[cfg(feature = "net")]
-    fn send<T: Write>(&mut self, tx: &mut T) -> io::Result<()> {
-        types::net::send(self, tx)
-    }
-    #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut T) -> io::Result<()> {
-        types::net::async_send(self, tx).await
-    }
-
-    #[cfg(feature = "net")]
-    fn receive<T: Read>(rx: &mut T) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net!();
 }
 
 impl Convert for MediumString {
@@ -156,24 +122,7 @@ impl Convert for MediumString {
         Ok(Self(String::from_utf8_lossy(&rx.split_off(rx.len()-size as usize)).to_string()))
     }
 
-    #[cfg(feature = "net")]
-    fn send<T: Write>(&mut self, tx: &mut T) -> io::Result<()> {
-        types::net::send(self, tx)
-    }
-    #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut T) -> io::Result<()> {
-        types::net::async_send(self, tx).await
-    }
-
-    #[cfg(feature = "net")]
-    fn receive<T: Read>(rx: &mut T) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net!();
 }
 
 impl Convert for LongString {
@@ -196,24 +145,7 @@ impl Convert for LongString {
         Ok(Self(String::from_utf8_lossy(&rx.split_off(rx.len()-size as usize)).to_string()))
     }
 
-    #[cfg(feature = "net")]
-    fn send<T: Write>(&mut self, tx: &mut T) -> io::Result<()> {
-        types::net::send(self, tx)
-    }
-    #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut T) -> io::Result<()> {
-        types::net::async_send(self, tx).await
-    }
-
-    #[cfg(feature = "net")]
-    fn receive<T: Read>(rx: &mut T) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net!();
 }
 
 impl Convert for String {
@@ -244,22 +176,5 @@ impl Convert for String {
         Ok(String::from_utf8_lossy(&rx.split_off(rx.len()-size.0 as usize)).to_string())
     }
 
-    #[cfg(feature = "net")]
-    fn send<T: Write>(&mut self, tx: &mut T) -> io::Result<()> {
-        types::net::send(self, tx)
-    }
-    #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut T) -> io::Result<()> {
-        types::net::async_send(self, tx).await
-    }
-
-    #[cfg(feature = "net")]
-    fn receive<T: Read>(rx: &mut T) -> io::Result<Self> {
-        types::net::receive(rx)
-    }
-
-    #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
-        types::net::async_receive(rx).await
-    }
+    impl_net!();
 }
