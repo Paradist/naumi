@@ -48,7 +48,7 @@ pub trait Convert {
     /// Use only this method of sending (Or syn variant), because it safely sends data, specifying its length at the beginning, so that nothing is lost or stuck together.
     ///
     #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(
+    async fn async_send<T: AsyncWriteExt + Unpin + AsyncWrite>(
         &mut self,
         tx: &mut T,
     ) -> io::Result<()>;
@@ -69,7 +69,7 @@ pub trait Convert {
     /// Use only this method of sending (Or syn variant), because it safely sends data, specifying its length at the beginning, so that nothing is lost or stuck together.
     ///
     #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self>
+    async fn async_receive<T: AsyncReadExt + Unpin + AsyncRead>(rx: &mut T) -> io::Result<Self>
     where
         Self: Sized;
 }

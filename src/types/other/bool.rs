@@ -31,7 +31,7 @@ impl Convert for bool {
     }
 
     #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(
+    async fn async_send<T: AsyncWriteExt + Unpin + AsyncWrite>(
         &mut self,
         tx: &mut T,
     ) -> io::Result<()> {

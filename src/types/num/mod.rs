@@ -53,7 +53,7 @@ impl Convert for u8 {
         tx.write_all(&vec![1, *self])
     }
     #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(
+    async fn async_send<T: AsyncWriteExt + Unpin + AsyncWrite>(
         &mut self,
         tx: &mut T,
     ) -> io::Result<()> {
@@ -79,7 +79,7 @@ impl Convert for u16 {
         tx.write_all(&self.to_le_bytes())
     }
     #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(
+    async fn async_send<T: AsyncWriteExt + Unpin + AsyncWrite>(
         &mut self,
         tx: &mut T,
     ) -> io::Result<()> {
@@ -106,7 +106,7 @@ impl Convert for u32 {
         tx.write_all(&self.to_le_bytes())
     }
     #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(
+    async fn async_send<T: AsyncWriteExt + Unpin + AsyncWrite>(
         &mut self,
         tx: &mut T,
     ) -> io::Result<()> {
@@ -133,7 +133,7 @@ impl Convert for u64 {
         tx.write_all(&self.to_le_bytes())
     }
     #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(
+    async fn async_send<T: AsyncWriteExt + Unpin + AsyncWrite>(
         &mut self,
         tx: &mut T,
     ) -> io::Result<()> {
@@ -160,7 +160,7 @@ impl Convert for u128 {
         tx.write_all(&self.to_le_bytes())
     }
     #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(
+    async fn async_send<T: AsyncWriteExt + Unpin + AsyncWrite>(
         &mut self,
         tx: &mut T,
     ) -> io::Result<()> {
@@ -191,7 +191,7 @@ impl Convert for i8 {
         tx.write_all(&vec![1, *self as u8])
     }
     #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(
+    async fn async_send<T: AsyncWriteExt + Unpin + AsyncWrite>(
         &mut self,
         tx: &mut T,
     ) -> io::Result<()> {
@@ -217,7 +217,7 @@ impl Convert for i16 {
         tx.write_all(&self.to_le_bytes())
     }
     #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(
+    async fn async_send<T: AsyncWriteExt + Unpin + AsyncWrite>(
         &mut self,
         tx: &mut T,
     ) -> io::Result<()> {
@@ -244,7 +244,7 @@ impl Convert for i32 {
         tx.write_all(&self.to_le_bytes())
     }
     #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(
+    async fn async_send<T: AsyncWriteExt + Unpin + AsyncWrite>(
         &mut self,
         tx: &mut T,
     ) -> io::Result<()> {
@@ -271,7 +271,7 @@ impl Convert for i64 {
         tx.write_all(&self.to_le_bytes())
     }
     #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(
+    async fn async_send<T: AsyncWriteExt + Unpin + AsyncWrite>(
         &mut self,
         tx: &mut T,
     ) -> io::Result<()> {
@@ -298,7 +298,7 @@ impl Convert for i128 {
         tx.write_all(&self.to_le_bytes())
     }
     #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(
+    async fn async_send<T: AsyncWriteExt + Unpin + AsyncWrite>(
         &mut self,
         tx: &mut T,
     ) -> io::Result<()> {
@@ -327,7 +327,7 @@ impl Convert for usize {
     }
 
     #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(
+    async fn async_send<T: AsyncWriteExt + Unpin + AsyncWrite>(
         &mut self,
         tx: &mut T,
     ) -> io::Result<()> {
@@ -341,7 +341,7 @@ impl Convert for usize {
     }
 
     #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
+    async fn async_receive<T: AsyncReadExt + Unpin + AsyncRead>(rx: &mut T) -> io::Result<Self> {
         Ok(types::net::async_receive::<u64, T>(rx).await? as Self)
     }
 }
@@ -363,7 +363,7 @@ impl Convert for isize {
     }
 
     #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(
+    async fn async_send<T: AsyncWriteExt + Unpin + AsyncWrite>(
         &mut self,
         tx: &mut T,
     ) -> io::Result<()> {
@@ -377,7 +377,7 @@ impl Convert for isize {
     }
 
     #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> {
+    async fn async_receive<T: AsyncReadExt + Unpin + AsyncRead>(rx: &mut T) -> io::Result<Self> {
         Ok(types::net::async_receive::<i64, T>(rx).await? as Self)
     }
 }
@@ -399,7 +399,7 @@ impl Convert for f32 {
         tx.write_all(&self.to_le_bytes())
     }
     #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(
+    async fn async_send<T: AsyncWriteExt + Unpin + AsyncWrite>(
         &mut self,
         tx: &mut T,
     ) -> io::Result<()> {
@@ -426,7 +426,7 @@ impl Convert for f64 {
         tx.write_all(&self.to_le_bytes())
     }
     #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(
+    async fn async_send<T: AsyncWriteExt + Unpin + AsyncWrite>(
         &mut self,
         tx: &mut T,
     ) -> io::Result<()> {

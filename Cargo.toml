@@ -1,7 +1,7 @@
 [package]
 name = "naumi"
 authors = [ "Paradist" ]
-version = "0.3.4"
+version = "0.3.5"
 description = "Lightweight and fast data transfer protocol. Fast de/serialization and tiny size!"
 edition = "2021"
 license = "MIT"
@@ -16,7 +16,7 @@ exclude = [".idea", "benchmarks", "examples"]
 [dependencies]
 varint-simd = "0"
 tokio = { version = "1", optional = true, features = ["rt-multi-thread", "io-util"]}
-nmacro = "0.1.5"
+nmacro = "0.1.6"
 
 [features]
 debug = []
