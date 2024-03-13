@@ -1,4 +1,3 @@
-use tokio::io::{AsyncRead, AsyncWrite};
 #[macro_export]
 macro_rules! impl_net {
     () => {
