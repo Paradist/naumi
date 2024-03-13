@@ -1,3 +1,3 @@
-pub mod option;
 pub mod bool;
+pub mod option;
 mod tuple;

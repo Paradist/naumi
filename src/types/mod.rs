@@ -1,20 +1,20 @@
 use std::io;
 
-pub mod num;
-pub mod string;
 pub mod iters;
-pub mod varint;
+pub mod num;
 pub mod other;
+pub mod string;
+pub mod varint;
 
 #[cfg(feature = "net")]
 use std::io::{Read, Write};
 
 #[cfg(feature = "net_async")]
-use tokio::io::{AsyncRead, AsyncWriteExt, AsyncReadExt, AsyncWrite};
+use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt};
 
+mod r#macro;
 #[cfg(any(feature = "net", feature = "net_async"))]
 pub mod net;
-mod r#macro;
 
 pub trait Convert {
     ///
@@ -30,7 +30,9 @@ pub trait Convert {
     ///
     /// Convert from bytes.
     ///
-    fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> where Self: Sized;
+    fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self>
+    where
+        Self: Sized;
 
     ///
     /// Send the data to the stream and clear the buffer.
@@ -46,7 +48,10 @@ pub trait Convert {
     /// Use only this method of sending (Or syn variant), because it safely sends data, specifying its length at the beginning, so that nothing is lost or stuck together.
     ///
     #[cfg(feature = "net_async")]
-    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut T) -> io::Result<()>;
+    async fn async_send<T: AsyncWriteExt + Unpin + AsyncRead>(
+        &mut self,
+        tx: &mut T,
+    ) -> io::Result<()>;
 
     ///
     /// Get data from stream.
@@ -54,7 +59,9 @@ pub trait Convert {
     /// Use only this method of sending (Or async variant), because it safely sends data, specifying its length at the beginning, so that nothing is lost or stuck together.
     ///
     #[cfg(feature = "net")]
-    fn receive<T: Read>(rx: &mut T) -> io::Result<Self> where Self: Sized;
+    fn receive<T: Read>(rx: &mut T) -> io::Result<Self>
+    where
+        Self: Sized;
 
     ///
     /// Get data from stream.
@@ -62,6 +69,7 @@ pub trait Convert {
     /// Use only this method of sending (Or syn variant), because it safely sends data, specifying its length at the beginning, so that nothing is lost or stuck together.
     ///
     #[cfg(feature = "net_async")]
-    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self> where Self: Sized;
-
+    async fn async_receive<T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut T) -> io::Result<Self>
+    where
+        Self: Sized;
 }

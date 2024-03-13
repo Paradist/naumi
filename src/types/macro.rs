@@ -1,4 +1,3 @@
-
 #[macro_export]
 macro_rules! impl_net {
     () => {
@@ -7,7 +6,10 @@ macro_rules! impl_net {
             types::net::send(self, tx)
         }
         #[cfg(feature = "net_async")]
-        async fn async_send<_T: AsyncWriteExt + Unpin + AsyncRead>(&mut self, tx: &mut _T) -> io::Result<()> {
+        async fn async_send<_T: AsyncWriteExt + Unpin + AsyncRead>(
+            &mut self,
+            tx: &mut _T,
+        ) -> io::Result<()> {
             types::net::async_send(self, tx).await
         }
 
@@ -17,7 +19,9 @@ macro_rules! impl_net {
         }
 
         #[cfg(feature = "net_async")]
-        async fn async_receive<_T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut _T) -> io::Result<Self> {
+        async fn async_receive<_T: AsyncReadExt + Unpin + AsyncWrite>(
+            rx: &mut _T,
+        ) -> io::Result<Self> {
             types::net::async_receive(rx).await
         }
     };
@@ -32,7 +36,9 @@ macro_rules! impl_net_receive {
         }
 
         #[cfg(feature = "net_async")]
-        async fn async_receive<_T: AsyncReadExt + Unpin + AsyncWrite>(rx: &mut _T) -> io::Result<Self> {
+        async fn async_receive<_T: AsyncReadExt + Unpin + AsyncWrite>(
+            rx: &mut _T,
+        ) -> io::Result<Self> {
             types::net::async_receive(rx).await
         }
     };

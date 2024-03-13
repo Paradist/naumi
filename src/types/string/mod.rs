@@ -1,16 +1,15 @@
 use std::io;
 use std::os::unix::prelude::OsStrExt;
 
-use crate::{impl_net, types};
-use crate::types::Convert;
 use crate::types::varint::{from_var_int_rev, to_var_int};
+use crate::types::Convert;
+use crate::{impl_net, types};
 
 #[cfg(feature = "net")]
 use std::io::{Read, Write};
 
 #[cfg(feature = "net_async")]
-use tokio::io::{AsyncRead, AsyncWriteExt, AsyncReadExt, AsyncWrite};
-
+use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt};
 
 ///
 /// String prefixed with u8.
@@ -73,7 +72,9 @@ impl Convert for TinyString {
     }
     fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
         let size = u8::from_bytes(rx)?;
-        Ok(Self(String::from_utf8_lossy(&rx.split_off(rx.len()-size as usize)).to_string()))
+        Ok(Self(
+            String::from_utf8_lossy(&rx.split_off(rx.len() - size as usize)).to_string(),
+        ))
     }
 
     impl_net!();
@@ -96,7 +97,9 @@ impl Convert for ShortString {
     }
     fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
         let size = u16::from_bytes(rx)?;
-        Ok(Self(String::from_utf8_lossy(&rx.split_off(rx.len()-size as usize)).to_string()))
+        Ok(Self(
+            String::from_utf8_lossy(&rx.split_off(rx.len() - size as usize)).to_string(),
+        ))
     }
 
     impl_net!();
@@ -119,7 +122,9 @@ impl Convert for MediumString {
     }
     fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
         let size = u32::from_bytes(rx)?;
-        Ok(Self(String::from_utf8_lossy(&rx.split_off(rx.len()-size as usize)).to_string()))
+        Ok(Self(
+            String::from_utf8_lossy(&rx.split_off(rx.len() - size as usize)).to_string(),
+        ))
     }
 
     impl_net!();
@@ -142,7 +147,9 @@ impl Convert for LongString {
     }
     fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
         let size = u64::from_bytes(rx)?;
-        Ok(Self(String::from_utf8_lossy(&rx.split_off(rx.len()-size as usize)).to_string()))
+        Ok(Self(
+            String::from_utf8_lossy(&rx.split_off(rx.len() - size as usize)).to_string(),
+        ))
     }
 
     impl_net!();
@@ -153,13 +160,13 @@ impl Convert for String {
         if self.len() < u32::MAX as usize {
             tx.extend_from_slice(self.as_bytes());
             let t = to_var_int(self.len() as u32);
-            let mut t =t.0[..t.1 as usize].to_vec();
+            let mut t = t.0[..t.1 as usize].to_vec();
             t.reverse();
             tx.extend_from_slice(&t);
         } else {
             tx.extend_from_slice(&self.as_bytes()[0..u32::MAX as usize]);
             let t = to_var_int(u32::MAX);
-            let mut t =t.0[..t.1 as usize].to_vec();
+            let mut t = t.0[..t.1 as usize].to_vec();
             t.reverse();
             tx.extend_from_slice(&t);
         }
@@ -171,9 +178,9 @@ impl Convert for String {
     }
     fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
         let size = from_var_int_rev(&rx)?;
-        rx.truncate(rx.len()-size.1);
+        rx.truncate(rx.len() - size.1);
 
-        Ok(String::from_utf8_lossy(&rx.split_off(rx.len()-size.0 as usize)).to_string())
+        Ok(String::from_utf8_lossy(&rx.split_off(rx.len() - size.0 as usize)).to_string())
     }
 
     impl_net!();

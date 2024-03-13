@@ -1,15 +1,14 @@
 use std::io;
 
-use crate::{impl_net, types};
-use crate::types::Convert;
 use crate::types::varint::{from_var_int_rev, to_var_int};
+use crate::types::Convert;
+use crate::{impl_net, types};
 
 #[cfg(feature = "net")]
 use std::io::{Read, Write};
 
 #[cfg(feature = "net_async")]
-use tokio::io::{AsyncRead, AsyncWriteExt, AsyncReadExt, AsyncWrite};
-
+use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt};
 
 ///
 /// A number with variable length.
@@ -38,10 +37,8 @@ impl Convert for VarInt {
     }
     fn from_bytes(rx: &mut Vec<u8>) -> io::Result<Self> {
         let x = from_var_int_rev(rx)?;
-        rx.truncate(rx.len()-x.1);
-        Ok(
-            Self(x.0)
-        )
+        rx.truncate(rx.len() - x.1);
+        Ok(Self(x.0))
     }
 
     impl_net!();
